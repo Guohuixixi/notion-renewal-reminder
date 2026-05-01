@@ -36,6 +36,8 @@ PROPERTY_RENEWED = "是否已续费"
 PROPERTY_REMINDER_SENT = "提醒已发送"
 PROPERTY_NOTIFY_EMAIL = "通知邮箱"
 PROPERTY_NOTE = "备注"
+PROPERTY_TRIAL_ACCOUNT = "商业版试用账号"
+PROPERTY_TRIAL_MONTH_QUOTA = "商业版试用月额度"
 
 
 def notion_request(method, path, body=None):
@@ -67,7 +69,7 @@ def notion_request(method, path, body=None):
 
 
 def query_due_tomorrow():
-    tomorrow = (datetime.now(TZ).date() + timedelta(days=1)).isoformat()
+    tomorrow = (datetime.now(TZ).date() + timedelta(days=5)).isoformat()
 
     print(f"今天日期：中国时间 {datetime.now(TZ).date().isoformat()}")
     print(f"本次查询的到期日：{tomorrow}")
@@ -234,6 +236,8 @@ def build_email_content(row):
     props = row.get("properties", {})
 
     account = get_plain_value(props.get(PROPERTY_ACCOUNT)) or "未填写账号"
+    trial_account = get_plain_value(props.get(PROPERTY_TRIAL_ACCOUNT))
+    trial_month_quota = get_plain_value(props.get(PROPERTY_TRIAL_MONTH_QUOTA))
     buyer_email = get_plain_value(props.get(PROPERTY_BUYER_EMAIL))
     contact_email = get_plain_value(props.get(PROPERTY_CONTACT_EMAIL))
     plan_type = get_plain_value(props.get(PROPERTY_PLAN_TYPE))
@@ -256,6 +260,8 @@ def build_email_content(row):
 
 账号信息：
 - 用户账号：{account}
+- 商业版试用账号：{trial_account}
+- 商业版试用月额度：{trial_month_quota}
 - 套餐类型：{plan_type}
 - 服务月数：{months}
 - 服务开始日：{start_date}
