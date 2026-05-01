@@ -1,0 +1,32 @@
+name: Notion Renewal Reminder
+
+on:
+  schedule:
+    # UTC 01:00 = 中国时间 09:00
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run reminder script
+        env:
+          NOTION_TOKEN: $ secrets.NOTION_TOKEN 
+          NOTION_DATABASE_ID: $ secrets.NOTION_DATABASE_ID 
+          SMTP_HOST: $ secrets.SMTP_HOST 
+          SMTP_PORT: $ secrets.SMTP_PORT 
+          SMTP_USER: $ secrets.SMTP_USER 
+          SMTP_PASSWORD: $ secrets.SMTP_PASSWORD 
+          MAIL_FROM: $ secrets.MAIL_FROM 
+          MAIL_TO: $ secrets.MAIL_TO 
+        run: python scripts/check_renewals.py
